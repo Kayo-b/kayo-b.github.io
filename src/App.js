@@ -1,14 +1,15 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import React, { useState } from 'react';
-import { Button, Card, CardActions, CardContent, CardMedia, Collapse, Grid, Typography, Box, Container, CssBaseline, Link, CardActionArea } from '@mui/material';
+import React, { useState, useRef } from 'react';
+import ContactForm from './ContactForm';
+import { Button, Card, CardActions, CardContent, CardMedia, Toolbar, Collapse, AppBar, Grid, Typography, Box, Container, CssBaseline, Link, CardActionArea } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; 
-
+import testGif from './giphy.gif';
 const projects = [
   {
     id: 1,
     title: 'twitter clone',
     description: 'full-stack application built with react and firebase. it has features such as user authentication, posting/reposting tweets, following users and profile customization.',
-    imageurl: 'path/to/your/image1.gif',
+    imageUrl: testGif,
     link: 'https://twitter-clone-project-quack.web.app/homepage'
   },
   {
@@ -33,14 +34,24 @@ const projects = [
     link: 'http://link-to-project4.com' 
   }
 ];
-
+const Section = ({ id, children }) => (
+  <Box id={id} sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    {children}
+  </Box>
+);
+const scrollToSection = (sectionId) => {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
 const ProjectCard = ({ project }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
+  
   return (
     <Card sx={{ position: 'relative', '&:hover .project-title': { opacity: 1 } }}>
       <Box sx={{ position: 'relative', height: 140, '&:hover img': { opacity: 0.3 } }}> 
@@ -127,19 +138,45 @@ export default function App() {
 
         }}
       >
+        <AppBar position="sticky">
+          <Toolbar>
+            <Button color="inherit" onClick={() => scrollToSection('section1')}>Section 1</Button>
+            <Button color="inherit" onClick={() => scrollToSection('section2')}>Section 2</Button>
+            <Button color="inherit" onClick={() => scrollToSection('section3')}>Section 3</Button>
+          </Toolbar>
+        </AppBar>
         <CssBaseline />
-        <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
-          <Typography variant="h4" component="h2" gutterBottom>
-            Web Development Projects
-          </Typography>
-          <Grid container spacing={4}>
-            {projects.map((project) => (
-              <Grid item xs={12} sm={6} md={4} key={project.id}>
-                <ProjectCard project={project}/>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+        <Section id="section1">
+          <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
+            <Typography variant="h5" component="h2" gutterBottom>
+              Web Development Projects
+            </Typography>
+            <Grid container spacing={4}>
+              {projects.map((project) => (
+                <Grid item xs={12} sm={6} md={6} key={project.id}>
+                  <ProjectCard project={project}/>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </Section>
+        <Section id="section2">
+          <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
+            <Typography variant="h5" component="h2" gutterBottom>
+              about.
+            </Typography>
+            {/* Add your about content here */}
+          </Container>
+        </Section>
+        <Section id="section3">
+          <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
+            <Typography variant="h5" component="h2" gutterBottom>
+              contact.
+            </Typography>
+            <ContactForm/> 
+            {/* Add your contact content here */}
+          </Container>
+        </Section>
         <Box
           component="footer"
           sx={{
