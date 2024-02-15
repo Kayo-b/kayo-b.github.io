@@ -35,7 +35,7 @@ const ContactForm = () => {
           label="Name"
           name="user_name"
           autoComplete="name"
-          autoFocus
+          sx={{backgroundColor: '#383851'}}
         />
         <TextField
           margin="normal"
@@ -45,6 +45,7 @@ const ContactForm = () => {
           label="Email Address"
           name="user_email"
           autoComplete="email"
+          sx={{backgroundColor: '#383851'}}
         />
         <TextField
           margin="normal"
@@ -56,6 +57,7 @@ const ContactForm = () => {
           id="message"
           multiline
           rows={4}
+          sx={{backgroundColor: '#383851'}}
         />
         <Button
           type="submit"

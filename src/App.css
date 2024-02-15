@@ -1,5 +1,17 @@
 .App {
   text-align: center;
+
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px rgb(88, 90, 116) inset !important;
+}
+
+input:-moz-ui-autofill {
+    background: '#585a74' !important;
 }
 
 .App-logo {
@@ -13,7 +25,7 @@
   }
 }
 
-.App-header {
+/* .App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -26,7 +38,7 @@
 
 .App-link {
   color: #61dafb;
-}
+} */
 
 @keyframes App-logo-spin {
   from {
@@ -36,3 +48,4 @@
     transform: rotate(360deg);
   }
 }
+
