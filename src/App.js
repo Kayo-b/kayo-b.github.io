@@ -167,7 +167,7 @@ export default function App() {
         <CssBaseline />
         <Section id="section1">
           <Container component="main" sx={{ mt: 12, mb: 2 }} maxWidth="sm">
-            <Typography variant="h5" component="h2" alignItens="center" sx={{ mb: 3 }} gutterBottom>
+            <Typography variant="h5" component="h2" align="center" sx={{ mb: 3 }} gutterBottom>
               projects.
             </Typography>
             <Grid container spacing={4}>
@@ -185,8 +185,7 @@ export default function App() {
               about.
             </Typography>
             <Typography paragraph>
-              Aspiring Fullstack developer, currently pursuing a bachelor's degree in software engineering and dabbling
-              in game development during spare time.
+              I am experienced in test automation and am an aspiring full-stack developer. Currently, I am pursuing a bachelor's degree in software engineering and enjoy exploring game development in my spare time.
             </Typography>
           </Container>
         </Section>
@@ -196,7 +195,6 @@ export default function App() {
               contact.
             </Typography>
             <ContactForm />
-            {/* Add your contact content here */}
           </Container>
         </Section>
         <Box
@@ -210,7 +208,6 @@ export default function App() {
           }}
         >
           <Container maxWidth="sm">
-            <Typography variant="body1">{/* My sticky footer can be found here. */}</Typography>4
             <Copyright />
           </Container>
         </Box>
