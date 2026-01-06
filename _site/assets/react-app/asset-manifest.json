@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/assets/react-app/static/css/main.fdf376bd.css",
+    "main.js": "/assets/react-app/static/js/main.960021c8.js",
+    "static/js/592.39137a03.chunk.js": "/assets/react-app/static/js/592.39137a03.chunk.js",
+    "static/media/game-store-rec4.gif": "/assets/react-app/static/media/game-store-rec4.3a116683ce9011ffb3a4.gif",
+    "static/media/twitter-clone-rec2.gif": "/assets/react-app/static/media/twitter-clone-rec2.1d132103870bf0504a1d.gif",
+    "static/media/cvrec.gif": "/assets/react-app/static/media/cvrec.6064775b9bd6060c339a.gif",
+    "static/media/android.gif": "/assets/react-app/static/media/android.6da317d331307b449050.gif",
+    "index.html": "/assets/react-app/index.html",
+    "main.fdf376bd.css.map": "/assets/react-app/static/css/main.fdf376bd.css.map",
+    "main.960021c8.js.map": "/assets/react-app/static/js/main.960021c8.js.map",
+    "592.39137a03.chunk.js.map": "/assets/react-app/static/js/592.39137a03.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fdf376bd.css",
+    "static/js/main.960021c8.js"
+  ]
+}
