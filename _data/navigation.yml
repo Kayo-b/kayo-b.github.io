@@ -1,12 +1,24 @@
-# main links
+# main lins
 main:
-  - title: "portfolio"
-    url: /portfolio/
-  - title: "about"
-    url: /about/
+  - title: "projects"
+    url: /projects/
+  # - title: "automation"
+  #   url: /test-automation/
+  # - title: "gamedev"
+  #   url: /gamedev/
+  # - title: "web-security"
+  #   url: /projects/web-sec/
   - title: "posts"
-    url: /year-archive/
-  # - title: "Sample Collections"
-  #   url: /collection-archive/
-  # - title: "Sitemap"
-  #   url: /sitemap/
+    url: /posts/
+
+projects_nav:
+  - title: "projects"
+    children:
+      - title: "web"
+        url: /projects/web-apps/
+      - title: "test automation"
+        url: /projects/test-automation/
+      - title: "game dev"
+        url: /projects/gamedev/
+      - title: "websec"
+        url: /projects/websec/

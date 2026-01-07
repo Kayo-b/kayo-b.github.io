@@ -17,7 +17,7 @@ minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "
 # Site Settings
 locale                   : "en-US"
 rtl                      : # true, false (default) # turns direction of the page into right to left for RTL languages
-title                    : "k.arch"
+title                    : "k.archive"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "karch"
@@ -115,7 +115,7 @@ analytics:
 author:
   name             : "kayo"
   avatar           :
-  bio              : "Software Eng. with focus on test automation."
+  bio              : "web development and automation."
   location         : "Germany"
   email            : 
   links:
