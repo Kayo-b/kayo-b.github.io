@@ -1,6 +1,6 @@
 ---
 title: "Web Security - HTB Course"
-date: 2025-01-07
+date: 2026-01-07
 categories: [infosec, web-security]
 tags: [web-security, curl, http, xss, csrf, sql-injection, htb]
 toc: true

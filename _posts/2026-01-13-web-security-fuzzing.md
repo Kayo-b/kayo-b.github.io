@@ -1,6 +1,6 @@
 ---
 title: "Web Security - Fuzzing"
-date: 2025-01-13
+date: 2026-01-13
 categories: [infosec, web-security]
 tags: [fuzzing, ffuf, gobuster, feroxbuster, wenum, subdomain-enumeration, directory-enumeration, htb]
 toc: true
