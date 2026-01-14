@@ -166,6 +166,7 @@ footer:
 include:
   - .htaccess
   - _pages
+  - assets/react-app
 exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
