@@ -167,6 +167,7 @@ include:
   - .htaccess
   - _pages
   - assets/react-app
+  - assets/react-app/static
 exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
