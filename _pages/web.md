@@ -1,5 +1,5 @@
 ---
-permalink: /projects/web
+permalink: /projects/web/
 title: "web apps"
 layout: single
 classes: wide
