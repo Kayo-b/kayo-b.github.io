@@ -6,7 +6,7 @@ tags: [starcraft, pytorch, unet, image-restoration, kaggle, python]
 toc: true
 toc_label: "Contents"
 toc_icon: "magic"
-excerpt: "Training a small U-Net to repaint eye-level renders in the unit's own art, when no eye-level art exists to learn from. First results, and why the first version was not enough."
+excerpt: "Training a small U-Net to repaint eye-level renders in the unit's own art, when no eye-level art exists to learn from. Two versions, better numbers, and why neither went into the game."
 ---
 
 The eye-level frames from posts #7 and #8 are the original pixels on rebuilt geometry. Where no frame ever showed a surface they are filled from around it, and where neighbouring directions disagree they turn blotchy. Steep units suffer most: the Firebat's chest and the SCV's back. This post covers a clean-up model meant to repaint those areas in the unit's own art.
@@ -46,7 +46,7 @@ Two reasons:
 - **The training renders had almost nothing to fill.** With one neighbour 11 degrees away, a leave-one-out render through the original camera has 0% filled pixels. At eye level 20-30% of a steep unit is filled. The model learned to fix seams and registration, not to paint large unseen areas.
 - **L1 loss averages.** Where the answer is uncertain, the L1-optimal output is the mean of the plausible answers, which is a blur.
 
-## Version 2 (training)
+## Version 2
 
 Both problems have direct fixes:
 
@@ -63,4 +63,16 @@ kaggle kernels push -p kaggle_eyelevel
 kaggle kernels output kayo01/sc-eyelevel -p results/
 ```
 
-The first run built the Protoss units (Probe, Zealot, Dragoon) and re-rendered ten units with v1 in 40 minutes. The next one trains v2 and re-renders the same units with it. Whether the critic helps at eye level, or only moves the numbers again, is what that run will show.
+The first run built the Protoss units (Probe, Zealot, Dragoon) and re-rendered ten units with v1 in 40 minutes. The second trained v2 (6188 pairs from 91 poses, 30k steps) and re-rendered the same ten units in 67 minutes.
+
+One trap on the way: pushing the kernel right after `kaggle datasets version` mounted the previous version of the dataset, because `kaggle datasets status` reports "ready" for the old version while the new one is still processing. The kernel now stops at once if a file the job list needs is missing.
+
+## Result: neither version goes in
+
+v2 raised its held-out score from 17.9 to 19.7 dB on the harder pairs. At eye level it traded v1's blur for grit: more texture, but noisy, with stray colour speckles. On a unit that already looked right, both versions made it worse.
+
+![Zealot: original frames, eye-level render, cleaned by v1, cleaned by v2](/assets/images/starcraft-fp/refine-v1-v2-zealot.jpg)
+
+![Firebat: original frames, eye-level render, cleaned by v1, cleaned by v2](/assets/images/starcraft-fp/refine-v1-v2-firebat.jpg)
+
+The game keeps the plain renders. The leave-one-out pairs teach the model the faults of renders through the original camera, and an eye-level render's faults differ (stretching, surfaces seen edge-on), so both versions improve the score on what they were trained for without fixing the frames that matter. With about 90 poses to learn from, the critic invents texture instead of recovering it. Units whose art is steep (the SCV and Firebat, drawn from 44-49 degrees) need a better shape more than a better painter.
